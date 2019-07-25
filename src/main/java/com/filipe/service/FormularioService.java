@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.filipe.model.Formulario;
+import com.filipe.model.Pergunta;
+import com.filipe.model.Resposta;
 import com.filipe.repository.FormularioRepository;
 import com.filipe.service.exception.ObjectNotFoundException;
 
@@ -26,6 +28,15 @@ public class FormularioService {
 	@Transactional
 	public Formulario insert(Formulario formulario) {
 		formulario.setId(null);
+		
+		for(Pergunta pergunta : formulario.getPerguntas()) {
+			pergunta.setFormulario(formulario);
+			
+			for(Resposta resposta : pergunta.getRespostas()) {
+				resposta.setPergunta(pergunta);
+			}
+		}
+		
 		formulario = formularioRepository.save(formulario);
 		return formulario;
 	}
